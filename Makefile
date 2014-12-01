@@ -8,10 +8,13 @@ TAR:=tar
 LAME_VERSION:=3.99.5
 LAME:=lame-$(LAME_VERSION)
 
-all: dist/libmp3lame.js
+all: dist/libmp3lame.js dist/libmp3lame.min.js
 
 dist/libmp3lame.js: $(LAME) pre.js post.js
 	$(EMCC) $(EMCC_OPTS) --pre-js pre.js --post-js post.js $(wildcard $(LAME)/libmp3lame/*.o) -o $@
+
+dist/libmp3lame.min.js: dist/libmp3lame.js
+	closure-compiler $< --language_in ECMASCRIPT5 --js_output_file $@
 
 $(LAME): $(LAME).tar.gz
 	$(TAR) xzvf $@.tar.gz && \
